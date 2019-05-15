@@ -1,0 +1,23 @@
+{
+    "todo": [{
+            "id": 1,
+            "status": "",
+            "libelle": ""
+        },
+        {
+            "libelle": "",
+            "status": "false",
+            "id": 2
+        },
+        {
+            "libelle": "",
+            "status": "not-checked",
+            "id": 3
+        },
+        {
+            "libelle": "Go to the gym",
+            "status": "not-checked",
+            "id": 4
+        }
+    ]
+}

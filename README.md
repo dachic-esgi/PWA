@@ -4,8 +4,8 @@
 
 ### Prerequisites
 
-Node
-JSON Server
+Node,
+JSON Server,
 Idb
 
 ### Installing

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Project PWA</title>
+    <link rel="stylesheet" href="./styles/list.css">
+</head>
+
+<body>
+
+    <div id="myDIV" class="header">
+        <h2 style="margin:5px">My ToDo List</h2>
+        <input type="text" name="lib" id="myInput" placeholder="Tap your task here">
+        <span class="addBtn" id="submit" onclick="add()">Add</span>
+    </div>
+
+    <ul id="myUL">
+    </ul>
+
+    <script src="./js/list/list.js"></script>
+    <script type="module" src="./js/app.js" async></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script>
+        document.getElementsByClassName("addBtn").onclick = add();
+
+        function add(e) {
+            var libelle = document.getElementById("myInput").value;
+
+            let task = {
+                "libelle": libelle,
+                "status": "not-checked"
+            };
+            if (navigator.onLine) {
+                addToJson(task);
+                var li = document.createElement("li");
+                li.appendChild(document.createTextNode(task.libelle));
+                document.getElementById("myUL").appendChild(li);
+            } else {
+                //addToIndex();
+            }
+        }
+
+        //Save in json via json server
+        function addToJson(data) {
+            let options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+            return fetch("http://localhost:3000/todo", options)
+                .then((response) => response.json)
+        }
+    </script>
+    <script type="module">
+
+        if('serviceWorker' in navigator) {
+            window.addEventListener('load', function(){
+                navigator.serviceWorker.register('/service-worker.js', {
+                    scope: '/',
+                });
+            })
+        }
+        else {
+            console.log('Service worker not supported');
+        }
+        (async function (document) {
+        
+            //Get data from indexDb and display the list for the 1st time
+            //const database = await openDB('app-store', 1);
+
+            const url='http://localhost:3000/todo';
+       
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data){
+                    updateList(data);
+                }
+            });
+                        
+            //TODO: Store data in indexdb
+            function addToIndex(data)
+            {
+                //const json = data.json();
+                /*const database = openDB('app-store', 1, {
+                    upgrade(db) {
+                        db.createObjectStore('list');
+                    }
+                });
+                database.put('list', data, 'libelle');
+
+                const tasks =  database.get('articles', 'articles');
+                if (!window.indexedDB)
+                window.alert("Votre navigateur ne supporte pas une version stable d'IndexedDB.");
+                var libelle = document.getElementById("myInput").value;
+                var request = window.indexedDB.open("ProjectPWA", 3);
+                
+                request.onupgradeneeded = async function (event) {
+                    var db = event.target.result;
+
+                    // Créer un objet de stockage qui contient les informations de nos clients.
+                    const objectStore = db.createObjectStore("todo", {
+                        keyPath: "id",
+                        autoIncrement: true,
+                    });
+
+                    // Créer un index
+                    objectStore.createIndex("libelle", "libelle", {
+                        unique: true
+                    });
+
+                    // Utiliser la transaction "oncomplete" pour être sûr que la création de l'objet de stockage
+                    // est terminée avant d'ajouter des données dedans.
+                    objectStore.transaction.oncomplete = function (event) {
+                        // Stocker les valeurs dans le nouvel objet de stockage.
+                        var list = {
+                            status: 'Test',
+                            libelle: data
+                        };
+                        
+                        var ListObjectStore = db.transaction("todo", "readwrite").objectStore("todo");
+                            ListObjectStore.add(list);
+                    }
+                    request.onerror = function(e) {
+                        console.log("Error",e.target.error.name);
+                    
+                    }
+                    request.onsuccess = function(e) {
+                        console.log("Woot! Did it");
+                    }
+                }*/
+            }
+            
+            // Update the displayed todo list
+            function updateList(data)
+            {
+  
+                data.map(obj => {
+                    if(obj.libelle !== '')
+                    {
+                        var li = document.createElement("li");
+                        li.appendChild(document.createTextNode(obj.libelle));
+                        document.getElementById("myUL").appendChild(li);
+                    }  
+                });
+            }
+        })(document);
+    </script>
+</body>
+
+</html>
